@@ -83,10 +83,16 @@ app.post("/register", function(req, res) {
   if(!isUnique(req.body.user)) {
     return res.status(409).send({success: false, reason: "EEXISTS"});
   }
-});
-
-app.post("/validUser", function(req, res) {
-
+  var pass = hashPass(req.body.password);
+  var id = crypto.randomBytes(16).toString("base64");
+  members[req.body.user] = {
+    id: id,
+    username: req.body.user,
+    password: pass
+  }
+  var token = tokenGen(id);
+  tokens[token.id] = token;
+  res.cookie("token", token.id).send({success: true, id: id});
 });
 
 function badLogin(req, res) {
@@ -96,6 +102,10 @@ function badLogin(req, res) {
 function hashPass(pass) {
   var hash = crypto.createHash("sha512");
   return hash.update(req.body.hash).digest("base64");
+}
+
+function isUnique(u) {
+  return members[u] == undefined;
 }
 
 
