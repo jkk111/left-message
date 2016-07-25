@@ -95,6 +95,11 @@ app.post("/register", function(req, res) {
   res.cookie("token", token.id).send({success: true, id: id});
 });
 
+app.post("/validUser", function(req, res) {
+  var user = req.body.user;
+  res.send({valid: members[req.body.user] == undefined});
+});
+
 function badLogin(req, res) {
   res.status(403).send({ success: false, reason: "BAD_INFO"});
 }
@@ -107,7 +112,6 @@ function hashPass(pass) {
 function isUnique(u) {
   return members[u] == undefined;
 }
-
 
 function tokenGen(uid) {
   var expiry = Date.now();
