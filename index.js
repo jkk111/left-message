@@ -100,6 +100,16 @@ app.post("/validUser", function(req, res) {
   res.send({valid: members[req.body.user] == undefined});
 });
 
+app.post("/message", function(req, res) {
+  var user = req.body.user;
+  if(!members[user]) {
+    return res.status(404).send({success: false, reason: "BADUSER"});
+  }
+  var message = req.body.message;
+  messages[user].push(message);
+  res.send({success: true});
+});
+
 function badLogin(req, res) {
   res.status(403).send({ success: false, reason: "BAD_INFO"});
 }
